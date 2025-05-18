@@ -1,30 +1,27 @@
 // index.js
-const PORT = process.env.PORT || 4000;
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 4000;
+const sequelize = require("./db");
+const productoRoutes = require("./routes/productoRoutes");
+const Producto = require("./models/Producto");
 
+// Configuraciones
 app.use(cors());
 app.use(express.json());
 
+// Ruta principal
 app.get("/", (req, res) => {
   res.send("API de Productos");
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
-
-
-const productoRoutes = require("./routes/productoRoutes");
+// Rutas de productos
 app.use("/api/productos", productoRoutes);
-
-const sequelize = require("./db");
-const Producto = require("./models/Producto");
 
 // Sincronización de Sequelize
 sequelize.sync({ force: false }).then(() => {
   console.log("✅ Base de datos sincronizada.");
 });
+
+// Exportar la aplicación para que Vercel la maneje
+module.exports = app;
